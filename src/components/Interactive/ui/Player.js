@@ -93,29 +93,48 @@ export default class Project extends Component {
     return null;
   }
 
+  jumpToNext() {
+    const next = this.state.relatedToTheme[
+      random(0, this.state.relatedToTheme.length)
+    ];
+    // define position in video to jump to
+
+    // start playing
+  }
+
   optionClick = e => {
     const theme = e.target.innerText;
     const rel = themesData.find(t => t.name === theme).projects;
-    let copy = [...rel];
-    copy.splice(copy.indexOf(this.props.slug), 1);
-    const next = copy[random(0, copy.length)];
-    const jumpTo = this.state.themesD;
-    // console.log(next, theme, jumpTo);
 
-    const currentTime = this.props.getCurrentTime();
-    let position = this.state.themesD.find(point => {
-      return point.startTime >= currentTime && point.terms.indexOf(theme) >= 0;
+    this.setState({
+      currentTheme: theme,
+      relatedToTheme: rel
     });
 
-    if (!position) {
-      position = this.state.themesD.find(
-        point => point.terms.indexOf(theme) >= 0
-      );
-    }
+    // TODO: CHANGE LOGIC FOR JUMPING BETWEEN VIDEOS, NO WAY TO FORCE AUTOPLAY IN MODERN BROWSERS
 
-    this.props.seekTo(position.startTime);
+    // let copy = [...rel];
+    // copy.splice(copy.indexOf(this.props.slug), 1);
+    // const next = copy[random(0, copy.length)];
+    // const jumpTo = this.state.themesD;
+    // // console.log(next, theme, jumpTo);
 
-    this.props.updatePosition(position);
+    // const currentTime = this.props.getCurrentTime();
+    // let position = this.state.themesD.find(point => {
+    //   return point.startTime >= currentTime && point.terms.indexOf(theme) >= 0;
+    // });
+
+    // console.log(themesData, next, DataStore.getProjectBySlug(next));
+
+    // if (!position) {
+    //   position = this.state.themesD.find(
+    //     point => point.terms.indexOf(theme) >= 0
+    //   );
+    // }
+
+    // this.props.seekTo(position.startTime);
+
+    // this.props.updatePosition(position);
   };
 
   getOptions() {

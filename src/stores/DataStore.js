@@ -15,6 +15,7 @@ class DataStore {
       getAllPages: this.getAllPages,
       getPageBySlug: this.getPageBySlug,
       getAllProjects: this.getAllProjects,
+      getProjectBySlug: this.getProjectBySlug,
       getRandomProject: this.getRandomProject,
       getTaxonomies: this.getTaxonomies,
       getPrevNextProjects: this.getPrevNextProjects,
@@ -248,6 +249,10 @@ class DataStore {
 
   getAllProjects() {
     return this.getState().data.projects;
+  }
+
+  getProjectBySlug(slug) {
+    return this.getState().data.projects.find(p => p.slug === slug);
   }
 
   getRandomProject() {

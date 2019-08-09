@@ -75,12 +75,10 @@ export default class Video extends Component {
   };
 
   onTimeUpdate = () => {
-    console.log('on time update');
-    this.player.toggleMuted();
     if (this.state.position) {
-      if (this.state.position.endTime <= currentTime) {
+      if (this.state.position.endTime <= this.player.currentTime) {
+        console.log('reached end of position');
       }
-      console.log(currentTime);
     }
   };
 
@@ -95,7 +93,6 @@ export default class Video extends Component {
   };
 
   seekTo = time => {
-    console.log(time >= this.player.duration);
     this.player.seek(time);
   };
 
@@ -112,14 +109,13 @@ export default class Video extends Component {
       width: `${dims.w}px`,
       height: `${dims.h}px`,
       params: {
-        autoplay: true,
+        autoplay: false,
         controls: false,
         quality: '720',
         'sharing-enable': false,
         'ui-logo': false,
         'ui-start-screen-info': false,
-        fullscreen: false,
-        mute: true
+        fullscreen: false
       }
     });
 
