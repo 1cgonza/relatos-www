@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
-import { fitElement } from '../../utils/helpers';
+import DataStore from '../../stores/DataStore';
+import { fitElement, random } from '../../utils/helpers';
 import Player from './ui/Player';
 import PlayPause from './ui/PlayPause';
+import { themesData, techniquesData } from '../../utils/categories';
 
 export default class Video extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentProject: null,
+      currentProjectThemes: null,
+      currentProjectThemeD: null,
       videoReady: false,
       playbackReady: false,
       duration: 0,
-      onTech: null,
-      onTheme: null,
       position: null,
-      playing: false
+      playing: false,
+      nextPosition: null,
+      playbackTheme: null
     };
 
     this.intervalID;
@@ -74,10 +79,57 @@ export default class Video extends Component {
     });
   };
 
+  shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+      [array[i], array[j]] = [array[j], array[i]]; // swap elements
+    }
+  }
+
+  loadNewVideoInPosition() {
+    const rel = themesData.find(t => t.name === this.state.playbackTheme)
+      .projects;
+    const next = DataStore.getProjectBySlug(rel[random(0, rel.length)]);
+    let copy = [...next.themesSrt.d];
+    this.shuffle(copy);
+
+    const position = copy.find(p => {
+      return p.terms.find(term => term === this.state.playbackTheme);
+    });
+    this.setState({
+      position: position,
+      currentProject: next.slug,
+      currentProjectThemes: next.themesSrt.options,
+      currentProjectThemeD: next.themesSrt.d
+    });
+
+    this.player.load(next.oembed, {
+      autoplay: true,
+      start: position.startTime
+    });
+  }
+
   onTimeUpdate = () => {
     if (this.state.position) {
       if (this.state.position.endTime <= this.player.currentTime) {
-        console.log('reached end of position');
+        const d = this.state.currentProjectThemeD;
+        let posI = d.findIndex(pos => {
+          return pos.startTime === this.state.position.startTime;
+        });
+
+        if (posI + 1 < d.length) {
+          const nextPoint = d[++posI];
+
+          if (nextPoint.terms.includes(this.state.playbackTheme)) {
+            this.setState({
+              position: nextPoint
+            });
+          } else {
+            this.loadNewVideoInPosition();
+          }
+        } else {
+          this.loadNewVideoInPosition();
+        }
       }
     }
   };
@@ -92,8 +144,28 @@ export default class Video extends Component {
     });
   };
 
+  setNextPosition = nextPosition => {
+    this.setState({
+      nextPosition: nextPosition
+    });
+  };
+
+  setPlaybackTheme = theme => {
+    this.setState({
+      playbackTheme: theme
+    });
+  };
+
   seekTo = time => {
-    this.player.seek(time);
+    if (this.player.bufferedTime === 0) {
+      this.player.load(this.props.videoID, {
+        autoplay: true,
+        start: time
+      });
+    } else {
+      if (this.player.paused) this.player.play();
+      this.player.seek(time);
+    }
   };
 
   videoScriptLoaded = () => {
@@ -130,6 +202,10 @@ export default class Video extends Component {
     // this.player.addEventListener('playing', this.onPlaying);
     // this.player.addEventListener('waiting', this.onBuffering);
     // this.player.addEventListener('apiready', this.videoApiReady);
+
+    this.setState({
+      currentProject: this.props.slug
+    });
   };
 
   componentDidMount() {
@@ -140,6 +216,13 @@ export default class Video extends Component {
     const siteS = document.getElementsByTagName('script')[0];
     siteS.parentNode.insertBefore(dailyMotionS, siteS);
     window.dmAsyncInit = this.videoScriptLoaded;
+
+    const project = DataStore.getProjectBySlug(this.props.slug);
+    this.setState({
+      currentProject: this.props.slug,
+      currentProjectThemes: project.themesSrt.options,
+      currentProjectThemeD: project.themesSrt.d
+    });
 
     window.addEventListener('resize', this.onResize);
   }
@@ -163,11 +246,15 @@ export default class Video extends Component {
           playing={this.state.playing}
         />
         <Player
-          slug={this.props.slug}
+          slug={this.state.currentProject}
+          currentProjectThemes={this.state.currentProjectThemes}
+          currentProjectThemeD={this.state.currentProjectThemeD}
           duration={this.state.duration}
           seekTo={this.seekTo}
           getCurrentTime={this.getCurrentTime}
           updatePosition={this.updatePosition}
+          setNextPosition={this.setNextPosition}
+          setPlaybackTheme={this.setPlaybackTheme}
         />
       </div>
     );

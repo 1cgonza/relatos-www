@@ -10,11 +10,16 @@ export default class Project extends Component {
     this.state = {
       themeOptions: null,
       tehcsOptions: null,
-      themesD: null
+      projectW: 0
     };
   }
 
-  onResize = e => {};
+  onResize = e => {
+    this.setState({
+      projectW:
+        this.refs.timeline.clientWidth / DataStore.getAllProjects().length
+    });
+  };
 
   timelineClick = e => {
     let coords = e.target.getBoundingClientRect();
@@ -71,82 +76,68 @@ export default class Project extends Component {
     });
   }
 
-  getTimelineEles() {
-    let projects = DataStore.getAllProjects();
+  getPoints() {
+    if (!this.refs.timeline) return null;
 
-    projects.forEach(project => {
-      let start = 0;
-      let end = 0;
-      const techs = project.techniquesSrt.d;
-      const themes = project.themesSrt.d;
+    const projects = DataStore.getAllProjects();
+    return projects.map((project, i) => {
+      const len = project.themesSrt.d[project.themesSrt.d.length - 1].endTime;
+      const x1 = i * this.state.projectW;
+      const stepX = this.state.projectW / len;
 
-      techs.forEach(obj => {
-        end = obj.endTime > end ? obj.endTime : end;
+      return project.themesSrt.d.map((point, j) => {
+        const x2 = stepX * point.startTime;
+        const w = (point.endTime - point.startTime) * stepX;
+
+        return point.terms.map((theme, ii) => {
+          const themeI = themesData.findIndex(obj => obj.name === theme);
+          return (
+            <span
+              key={`project${i}-point${j}-term${ii}`}
+              className={`timelinePoint ${project.slug} ${
+                themesData[themeI].slug
+              }`}
+              style={{
+                left: `${x1 + x2}px`,
+                width: `${w}px`,
+                top: `${themeI * 5}px`,
+                opacity: this.props.slug === project.slug ? 1 : 0.3
+              }}
+            />
+          );
+        });
       });
-      themes.forEach(obj => {
-        end = obj.endTime > end ? obj.endTime : end;
-      });
-
-      // console.log(techs, themes, end);
     });
-    // console.log(projects);
-    return null;
-  }
-
-  jumpToNext() {
-    const next = this.state.relatedToTheme[
-      random(0, this.state.relatedToTheme.length)
-    ];
-    // define position in video to jump to
-
-    // start playing
   }
 
   optionClick = e => {
     const theme = e.target.innerText;
-    const rel = themesData.find(t => t.name === theme).projects;
 
-    this.setState({
-      currentTheme: theme,
-      relatedToTheme: rel
+    // Define position
+    const currentTime = this.props.getCurrentTime();
+    let position = this.props.currentProjectThemeD.find(point => {
+      return point.startTime >= currentTime && point.terms.indexOf(theme) >= 0;
     });
 
-    // TODO: CHANGE LOGIC FOR JUMPING BETWEEN VIDEOS, NO WAY TO FORCE AUTOPLAY IN MODERN BROWSERS
+    if (position) {
+      this.props.updatePosition(position);
+      this.props.seekTo(position.startTime);
+    }
 
-    // let copy = [...rel];
-    // copy.splice(copy.indexOf(this.props.slug), 1);
-    // const next = copy[random(0, copy.length)];
-    // const jumpTo = this.state.themesD;
-    // // console.log(next, theme, jumpTo);
-
-    // const currentTime = this.props.getCurrentTime();
-    // let position = this.state.themesD.find(point => {
-    //   return point.startTime >= currentTime && point.terms.indexOf(theme) >= 0;
-    // });
-
-    // console.log(themesData, next, DataStore.getProjectBySlug(next));
-
-    // if (!position) {
-    //   position = this.state.themesD.find(
-    //     point => point.terms.indexOf(theme) >= 0
-    //   );
-    // }
-
-    // this.props.seekTo(position.startTime);
-
-    // this.props.updatePosition(position);
+    this.props.setPlaybackTheme(theme);
   };
 
   getOptions() {
-    if (!this.state.themeOptions) {
+    if (!this.props.currentProjectThemes) {
       return null;
     }
 
-    return this.state.themeOptions.map((option, i) => {
+    return this.props.currentProjectThemes.map((option, i) => {
+      const themeI = themesData.findIndex(theme => theme.name === option);
       return (
         <span
           key={`op${i}`}
-          className='timelineOption'
+          className={`timelineOption ${themesData[themeI].slug}`}
           data-name={option}
           onClick={this.optionClick}
         >
@@ -157,27 +148,10 @@ export default class Project extends Component {
   }
 
   componentDidMount() {
-    const projects = DataStore.getAllProjects();
-    const project = DataStore.getPageBySlug(this.props.slug, 'projects');
-    const themes = project.themesSrt;
-    const techs = project.techniquesSrt;
-
-    const projectW = this.refs.timeline.clientWidth / projects.length;
-    const projectI = projects.findIndex(proj => proj.slug === this.props.slug);
-
-    Object.assign(this.refs.timelinePos.style, {
-      width: `${projectW}px`,
-      left: `${projectI * projectW + this.refs.timeline.offsetLeft}px`
-    });
-
-    console.log(themes.d);
-
     this.setState({
-      themeOptions: themes.options,
-      tehcsOptions: techs.options,
-      themesD: themes.d
+      projectW:
+        this.refs.timeline.clientWidth / DataStore.getAllProjects().length
     });
-
     window.addEventListener('resize', this.onResize);
   }
 
@@ -186,19 +160,18 @@ export default class Project extends Component {
   }
 
   render() {
-    let timelineEles = this.getTimelineEles();
-    let options = this.getOptions();
+    const points = this.getPoints();
 
     return (
       <div className='player'>
-        <div ref='timelinePos' className='timelinePos' />
         <div ref='timeline' className='timeline' onClick={this.timelineClick}>
+          {points}
           <div ref='progress' className='progress' />
           <div ref='header' className='header' />
         </div>
 
         <div className='options' ref='options'>
-          {options}
+          {this.getOptions()}
         </div>
         <div ref='tip' className='tip' />
       </div>

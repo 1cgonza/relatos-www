@@ -1,40 +1,29 @@
 import React, { Component } from 'react';
 import DataStore from '../../stores/DataStore';
+import Video from './Video';
 
 export default class Project extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      inProject: null
-    };
-  }
-
-  getTimelineEles() {
-    let projects = DataStore.getAllProjects();
-
-    projects.forEach(project => {
-      let start = 0;
-      let end = 0;
-      const techs = project.techniquesSrt;
-      const themes = project.themesSrt;
-
-      techs.forEach(obj => {
-        end = obj.endTime > end ? obj.endTime : end;
-      });
-      themes.forEach(obj => {
-        end = obj.endTime > end ? obj.endTime : end;
-      });
-
-      // console.log(techs, themes, end);
+  onVideoSectionClick = () => {
+    window.scrollTo({
+      top: this.refs.sectionVideo.offsetHeight,
+      left: 0,
+      behavior: 'smooth'
     });
-    // console.log(projects);
-    return null;
-  }
+  };
 
   render() {
-    let timelineEles = this.getTimelineEles();
+    const project = DataStore.getAllProjects()[0];
 
-    return <main />;
+    return (
+      <main>
+        <section
+          ref='sectionVideo'
+          className='projectSection sectionVideo'
+          onClick={this.onVideoSectionClick}
+        >
+          <Video slug={project.slug} videoID={project.oembed} />
+        </section>
+      </main>
+    );
   }
 }

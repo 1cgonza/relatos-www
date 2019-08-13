@@ -26,12 +26,12 @@ export default class Project extends Component {
   };
 
   onVideoSectionClick = () => {
-      window.scrollTo({
-        top: this.refs.sectionVideo.offsetHeight,
-        left: 0,
-        behavior: 'smooth'
-      });
-  }
+    window.scrollTo({
+      top: this.refs.sectionVideo.offsetHeight,
+      left: 0,
+      behavior: 'smooth'
+    });
+  };
 
   getVideo(id) {
     if (!id) return null;
@@ -76,9 +76,7 @@ export default class Project extends Component {
       );
     }
 
-    let project = DataStore.getPageBySlug(this.props.slug, 'projects');
-    let quote = this.getQuote(project.quote);
-    let video = this.getVideo(project.oembed);
+    const project = DataStore.getPageBySlug(this.props.slug, 'projects');
     let arrows = this.getArrows();
     let flock = DataStore.userAnim ? <Flock img={DataStore.userAnim} /> : null;
 
@@ -89,7 +87,7 @@ export default class Project extends Component {
         <section className='projectSection sectionForest' ref='main'>
           <div className='projectSummary' style={{ zIndex: 9 }}>
             <h1 className='projectTitle'>{project.title}</h1>
-            {quote}
+            {this.getQuote(project.quote)}
           </div>
 
           <Tree
@@ -100,7 +98,14 @@ export default class Project extends Component {
           <Bosque />
           <RiverColors violenceIds={project.violencia} />
         </section>
-        <section ref='sectionVideo' className='projectSection sectionVideo' onClick={this.onVideoSectionClick}>{video}</section>
+        <section
+          ref='sectionVideo'
+          className='projectSection sectionVideo'
+          slug={project.slug}
+          onClick={this.onVideoSectionClick}
+        >
+          {this.getVideo(project.oembed)}
+        </section>
         <Docs project={project} />
         <GalleryUI />
       </main>
