@@ -2,8 +2,16 @@
 .landingPage {
   .landingLogo {
     width: 400px;
-height: 93px;
+    height: 93px;
   }
 }
 
 /**------------------- */
+
+#taxonomiesMenu {
+  position: absolute;
+  top: 25px;
+  left: 45%;
+  transform: translate(-50%);
+  font-size: .85em;
+}

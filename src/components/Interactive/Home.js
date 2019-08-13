@@ -38,7 +38,7 @@ export default class Home extends React.Component {
   onResize = () => {
     this.debouncer.debounce().then(() => {
       this.setState({
-        stageW: window.innerWidth,
+        stageW: document.body.clientWidth,
         stageH: window.innerHeight
       });
     });
@@ -92,12 +92,15 @@ export default class Home extends React.Component {
       return found;
     });
 
-    const pad = window.innerWidth / projects.length;
+    const pad = document.body.clientWidth / projects.length;
 
     ret = projects.map((project, i) => {
       const baseX = pad * i;
       let x = random(baseX, pad * (i + 1) - 50);
-      x = x + 100 > window.innerWidth ? window.innerWidth - 100 : x;
+      x =
+        x + 100 > document.body.clientWidth
+          ? document.body.clientWidth - 100
+          : x;
 
       const y = random(200, window.innerHeight - 200);
       const rStep = TWO_PI / project.violencia.length;

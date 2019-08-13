@@ -1,7 +1,7 @@
-const PI         = Math.PI;
-const TWO_PI     = PI * 2;
+const PI = Math.PI;
+const TWO_PI = PI * 2;
 const QUARTER_PI = PI / 4;
-const toRad      = PI / 180;
+const toRad = PI / 180;
 /**
  * Create a new map instance
  *
@@ -16,7 +16,7 @@ const toRad      = PI / 180;
  * @param {Number} config.center.lat  Map center latitude
  */
 var Map = function(config) {
-  var w = config.width || window.innerWidth;
+  var w = config.width || document.body.clientWidth;
   var h = config.height || window.innerHeight;
   var zoom = config.zoom || 11;
 
@@ -29,19 +29,19 @@ var Map = function(config) {
     this.center = {};
   }
 
-  this.hasCenter  = null;
+  this.hasCenter = null;
   this.updateSize(w, h, zoom);
 };
 
 export default Map;
 
 Map.prototype.updateSize = function(w, h, zoom) {
-  this.stageWidth   = w;
+  this.stageWidth = w;
   this.stageCenterY = h / 2;
-  this.zoom         = zoom || this.zoom;
-  this.zoomX        = this.stageWidth * this.zoom;
-  this.zoomY        = this.stageCenterY * this.zoom;
-  this.zoomRad      = this.zoomX / 360;
+  this.zoom = zoom || this.zoom;
+  this.zoomX = this.stageWidth * this.zoom;
+  this.zoomY = this.stageCenterY * this.zoom;
+  this.zoomRad = this.zoomX / 360;
 
   this.newCenter(this.center.lon, this.center.lat);
 };
@@ -54,9 +54,9 @@ Map.prototype.newCenter = function(lon, lat) {
 
 Map.prototype.convertCoordinates = function(lon, lat) {
   var latRad = +lat * toRad;
-  var mercatorN = Math.log(Math.tan(QUARTER_PI + (latRad / 2)));
+  var mercatorN = Math.log(Math.tan(QUARTER_PI + latRad / 2));
   var x = (+lon + 180) * this.zoomRad;
-  var y = (this.zoomY - (this.zoomX * mercatorN / TWO_PI));
+  var y = this.zoomY - (this.zoomX * mercatorN) / TWO_PI;
 
   if (this.hasCenter) {
     x -= this.center.x;
@@ -66,5 +66,5 @@ Map.prototype.convertCoordinates = function(lon, lat) {
     this.center.y = y;
   }
 
-  return {x: x, y: y};
+  return { x: x, y: y };
 };

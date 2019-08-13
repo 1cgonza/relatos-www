@@ -16,6 +16,8 @@ export default class Header extends Component {
     }));
   };
 
+  componentDidMount() {}
+
   render() {
     const pathname = location.pathname;
     const showMainMenu = pathname === '/' || pathname === '/sobre';
@@ -25,6 +27,7 @@ export default class Header extends Component {
       <header>
         {menu}
         <Link className='siteLogo' to='/' />
+        <div ref='iconScroll' className='iconScroll' />
       </header>
     );
   }

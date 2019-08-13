@@ -104,7 +104,7 @@ export default class TaxMenu extends React.Component {
     );
 
     return (
-      <div id='taxonomiesMenu' className={this.props.grid}>
+      <div id='taxonomiesMenu' className='d-50 ld-60'>
         <div className='typesViolence' ref='violenceContainer'>
           <span
             ref='all'

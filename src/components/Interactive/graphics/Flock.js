@@ -34,7 +34,7 @@ export default class Flock extends React.Component {
     this.ctx = this.canvas.getContext('2d');
 
     this.setState(prevState => ({
-      stageW: window.innerWidth,
+      stageW: document.body.clientWidth,
       stageH: window.innerHeight
     }));
 
@@ -84,7 +84,7 @@ class Bird {
     this.vx = 0;
     this.vy = 0;
     this.gravityY = 0.005;
-    this.w = window.innerWidth;
+    this.w = document.body.clientWidth;
     this.h = window.innerHeight;
     this.shuffle();
   }

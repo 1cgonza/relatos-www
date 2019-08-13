@@ -13,6 +13,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 body {
@@ -125,8 +126,8 @@ a:visited {
 
     .tax {
       display: inline-block;
-      opacity: 0.5;
-      margin: 0 1em 1em 0;
+      opacity: 0.2;
+      margin: 0 .7em .7em 0;
       border-bottom: 2px solid;
       cursor: pointer;
 
@@ -795,8 +796,10 @@ $quoteSize: 80px;
         display: block;
         pointer-events: none;
         position: absolute;
-        min-width: 300px;
-        top: -25px;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
         z-index: 999;
       }
 
@@ -1047,5 +1050,49 @@ $mf_y2: 0%;
       width: 56%;
       overflow: auto;
     }
+  }
+}
+
+.iconScroll,
+.iconScroll:before {
+  left: 50%;
+}
+
+.iconScroll {
+  width: 30px;
+  height: 60px;
+  margin-left: -20px;
+  border-radius: 25px;
+  background-color: #FFF;
+  position: fixed;
+  bottom: 10px;
+  z-index: 999;
+  border: 1px solid #CCC;
+  opacity: .6;
+
+  &::before {
+    position: absolute;
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #999;
+    margin-left: -4px;
+    top: 8px;
+    border-radius: 4px;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+    animation-name: scroll;
+  }
+}
+
+
+@keyframes scroll {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(35px);
   }
 }

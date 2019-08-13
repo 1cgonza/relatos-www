@@ -51,7 +51,7 @@ export default class Project extends Component {
     }
 
     let h = sizeFromPercentage(18, window.innerHeight) | 0;
-    let w = sizeFromPercentage(90, window.innerWidth) | 0;
+    let w = sizeFromPercentage(90, document.body.clientWidth) | 0;
     let stepH = h / this.state.options.length;
     let stepW = w / (this.state.duration * 1000);
 

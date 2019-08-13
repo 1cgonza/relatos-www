@@ -28,18 +28,9 @@ export default class Marker extends Component {
   }
 
   render() {
-    let x = this.props.x;
-    let cl = 'marker';
-
-    if (x < 300) {
-      cl += ' pushRight';
-    } else if (x > window.innerWidth - 300) {
-      cl += ' pushLeft';
-    }
-
     return (
       <Link
-        className={cl}
+        className='marker'
         ref={this.props.slug}
         data-slug={this.props.slug}
         to={this.props.path}
@@ -64,7 +55,7 @@ export default class Marker extends Component {
             height: `${this.dims.h}px`,
             backgroundSize: `${this.dims.w * 3}px, ${this.dims.h * 3}px`,
             backgroundPosition: `-${this.x}px -${this.y}px`,
-            transform: 'scale(1.3)'
+            transform: 'scale(2.3)'
           }}
         />
       </Link>
