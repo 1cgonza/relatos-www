@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import DataStore from '../../../stores/DataStore';
-import { sizeFromPercentage, random } from '../../../utils/helpers';
+import { sizeFromPercentage } from '../../../utils/helpers';
 import { themesData, techniquesData } from '../../../utils/categories';
 
-export default class Project extends Component {
+export default class Player extends Component {
   constructor(props) {
     super(props);
 
@@ -12,6 +12,8 @@ export default class Project extends Component {
       tehcsOptions: null,
       projectW: 0
     };
+
+    this.loop;
   }
 
   onResize = e => {
@@ -19,13 +21,6 @@ export default class Project extends Component {
       projectW:
         this.refs.timeline.clientWidth / DataStore.getAllProjects().length
     });
-  };
-
-  timelineClick = e => {
-    let coords = e.target.getBoundingClientRect();
-    const pos = e.clientX - coords.left;
-    const s = pos * (this.props.duration / Math.round(coords.width));
-    this.props.seekTo(s);
   };
 
   handleMouseEnter = e => {
@@ -44,37 +39,6 @@ export default class Project extends Component {
   handleClick = e => {
     this.player.seekTo(e.target.dataset.start);
   };
-
-  getTimelineEles() {
-    if (!this.state.d || !this.state.duration) {
-      return null;
-    }
-
-    let h = sizeFromPercentage(18, window.innerHeight) | 0;
-    let w = sizeFromPercentage(90, document.body.clientWidth) | 0;
-    let stepH = h / this.state.options.length;
-    let stepW = w / (this.state.duration * 1000);
-
-    return this.state.options.map((option, i) => {
-      return option.d.map((node, j) => {
-        return (
-          <span
-            key={option.slug + i + j}
-            className={`timelineEle ${option.slug}`}
-            data-name={option.name}
-            data-start={node.start / 1000}
-            style={{
-              left: node.start * stepW + 'px',
-              top: i * stepH + 'px'
-            }}
-            onMouseEnter={this.handleMouseEnter}
-            onMouseLeave={this.handleMouseLeave}
-            onClick={this.handleClick}
-          />
-        );
-      });
-    });
-  }
 
   getPoints() {
     if (!this.refs.timeline) return null;
@@ -164,7 +128,7 @@ export default class Project extends Component {
 
     return (
       <div className='player'>
-        <div ref='timeline' className='timeline' onClick={this.timelineClick}>
+        <div ref='timeline' className='timeline'>
           {points}
           <div ref='progress' className='progress' />
           <div ref='header' className='header' />

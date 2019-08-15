@@ -1108,3 +1108,29 @@ $mf_y2: 0%;
   left: 0;
   z-index: 0;
 }
+
+.videoPlayerWrapper {
+  background-color: yellow;
+  height: 20px;
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+
+  .buffered {
+    background-color: rgba(0, 0, 0, 0.6);
+    height: 20px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .played {
+    background-color: white;
+    height: 20px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+}

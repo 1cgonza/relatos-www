@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import DataStore from '../../stores/DataStore';
-import { fitElement, random } from '../../utils/helpers';
+import { fitElement, random, Debouncer } from '../../utils/helpers';
 import Player from './ui/Player';
 import PlayPause from './ui/PlayPause';
+import VideoPlayer from './ui/VideoPlayer';
 import { themesData, techniquesData } from '../../utils/categories';
 
 export default class Video extends Component {
@@ -18,32 +19,41 @@ export default class Video extends Component {
       position: null,
       playing: false,
       nextPosition: null,
-      playbackTheme: null
+      playbackTheme: null,
+      dims: null,
+      buffered: 0,
+      currentTime: 0
     };
 
-    this.intervalID;
+    this.debouncer = new Debouncer();
   }
 
   onResize = () => {
     if (!this.state.playbackReady) return;
 
-    const dims = fitElement(
-      1280,
-      720,
-      document.body.clientWidth,
-      window.innerHeight
-    );
+    this.debouncer.debounce().then(() => {
+      const dims = fitElement(
+        1280,
+        720,
+        document.body.clientWidth,
+        window.innerHeight
+      );
 
-    this.player.width = `${dims.w}px`;
-    this.player.height = `${dims.h}px`;
+      this.player.width = `${dims.w}px`;
+      this.player.height = `${dims.h}px`;
 
-    if (this.state.playing) {
-      window.scrollTo({
-        top: this.refs.videoWrapper.offsetHeight,
-        left: 0,
-        behavior: 'smooth'
+      if (this.state.playing) {
+        window.scrollTo({
+          top: this.refs.videoWrapper.offsetHeight,
+          left: 0,
+          behavior: 'smooth'
+        });
+      }
+
+      this.setState({
+        dims: dims
       });
-    }
+    });
   };
 
   // https://developer.dailymotion.com/player#player-api-events
@@ -132,6 +142,11 @@ export default class Video extends Component {
         }
       }
     }
+
+    this.setState({
+      currentTime: this.player.currentTime,
+      buffered: this.player.bufferedTime
+    });
   };
 
   getCurrentTime = () => {
@@ -204,7 +219,8 @@ export default class Video extends Component {
     // this.player.addEventListener('apiready', this.videoApiReady);
 
     this.setState({
-      currentProject: this.props.slug
+      currentProject: this.props.slug,
+      dims: dims
     });
   };
 
@@ -245,11 +261,17 @@ export default class Video extends Component {
           ready={this.state.playbackReady}
           playing={this.state.playing}
         />
+        <VideoPlayer
+          dims={this.state.dims}
+          duration={this.state.duration}
+          seekTo={this.seekTo}
+          buffered={this.state.buffered}
+          currentTime={this.state.currentTime}
+        />
         <Player
           slug={this.state.currentProject}
           currentProjectThemes={this.state.currentProjectThemes}
           currentProjectThemeD={this.state.currentProjectThemeD}
-          duration={this.state.duration}
           seekTo={this.seekTo}
           getCurrentTime={this.getCurrentTime}
           updatePosition={this.updatePosition}
