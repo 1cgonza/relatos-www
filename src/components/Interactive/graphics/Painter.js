@@ -217,7 +217,9 @@ export default class Painter extends Component {
 
     if (this.ctx) {
       if (this.props.eraseAll) {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let c = this.frames[this.props.frame].canvas;
+        this.ctx.clearRect(0, 0, c.width, c.height);
+        this.props.resetEraseAll();
       }
 
       if (this.props.drawingMode === 1) {

@@ -129,6 +129,7 @@ export default class Drawing extends Component {
         frame={this.state.frame}
         birdsImg={this.birds}
         eraseAll={this.state.eraseAll}
+        resetEraseAll={this.resetEraseAll}
         play={this.state.play}
         readyToSend={this.readyToSend}
       />
