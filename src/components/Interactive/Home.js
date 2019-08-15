@@ -6,7 +6,6 @@ import Marker from './Marker';
 import Perlin from '../../utils/Perlin';
 import River from './graphics/River';
 import RiverColors from './graphics/RiverColors';
-import Flock from './graphics/Flock';
 import { TWO_PI } from '../../utils/const';
 import { random, Debouncer } from '../../utils/helpers';
 let animReq;
@@ -176,7 +175,6 @@ export default class Home extends React.Component {
 
   render() {
     let markers = this.getMarkers();
-    let flock = DataStore.userAnim ? <Flock img={DataStore.userAnim} /> : null;
 
     return (
       <main>
@@ -194,7 +192,6 @@ export default class Home extends React.Component {
         </section>
 
         <RiverColors />
-        {flock}
       </main>
     );
   }

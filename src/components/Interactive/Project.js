@@ -7,7 +7,6 @@ import Docs from './Docs';
 import GalleryUI from './ui/GalleryUI';
 import RiverColors from './graphics/RiverColors';
 import Bosque from './graphics/Bosque';
-import Flock from './graphics/Flock';
 
 export default class Project extends Component {
   constructor(props) {
@@ -78,11 +77,9 @@ export default class Project extends Component {
 
     const project = DataStore.getPageBySlug(this.props.slug, 'projects');
     let arrows = this.getArrows();
-    let flock = DataStore.userAnim ? <Flock img={DataStore.userAnim} /> : null;
 
     return (
       <main>
-        {flock}
         {arrows}
         <section className='projectSection sectionForest' ref='main'>
           <div className='projectSummary' style={{ zIndex: 9 }}>

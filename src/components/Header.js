@@ -6,7 +6,8 @@ export default class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      showScroll: true
     };
   }
 
@@ -16,18 +17,45 @@ export default class Header extends Component {
     }));
   };
 
-  componentDidMount() {}
+  onScroll = e => {
+    if (e.pageY >= document.body.clientHeight - window.innerHeight - 400) {
+      this.setState({
+        showScroll: false
+      });
+    } else {
+      if (!this.state.showScroll) {
+        this.setState({
+          showScroll: true
+        });
+      }
+    }
+  };
+
+  getScroll(hide) {
+    if (hide) return null;
+
+    let cl = 'iconScroll';
+    cl += !this.state.showScroll ? ' hide' : '';
+    return <div ref='iconScroll' className={cl} />;
+  }
+
+  componentDidMount() {
+    document.addEventListener('scroll', this.onScroll);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.onScroll);
+  }
 
   render() {
     const pathname = location.pathname;
     const showMainMenu = pathname === '/' || pathname === '/sobre';
-    const menu = !showMainMenu ? <MainMenu /> : null;
 
     return (
       <header>
-        {menu}
+        {!showMainMenu ? <MainMenu /> : null}
         <Link className='siteLogo' to='/' />
-        <div ref='iconScroll' className='iconScroll' />
+        {this.getScroll(showMainMenu)}
       </header>
     );
   }

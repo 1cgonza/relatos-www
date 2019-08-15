@@ -186,7 +186,7 @@ export default class Drawing extends Component {
       anim.onload = () => {
         DataStore.userAnim = anim;
         DataStore.userAnimD = d;
-        history.push('/');
+        // history.push('/');
       };
       anim.src = url;
     });
@@ -215,15 +215,15 @@ export default class Drawing extends Component {
   }
 
   render() {
-    let lineWidth = this.state.lineWidth;
-    let step = 50 / 150;
-    let w = lineWidth * step;
+    const step = 50 / 150;
+    let w = this.state.lineWidth * step;
     w = w <= 2 ? 2 : w;
     let hex = rgbToHex(this.state.lineTone) || '#0000';
     let frames = this.buildFramesPreview();
     let painter = this.getPainter();
     let playPause = !this.state.play ? 'play' : 'pause';
     let ready = this.getReadyBtn();
+    console.log(history);
 
     return (
       <div

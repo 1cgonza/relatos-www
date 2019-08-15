@@ -1069,6 +1069,11 @@ $mf_y2: 0%;
   z-index: 999;
   border: 1px solid #CCC;
   opacity: .6;
+  transition: all 0.25s ease-in-out;
+
+  &.hide {
+    opacity: 0;
+  }
 
   &::before {
     position: absolute;
@@ -1095,4 +1100,11 @@ $mf_y2: 0%;
     opacity: 0;
     transform: translateY(35px);
   }
+}
+
+.flockWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
 }

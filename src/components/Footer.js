@@ -1,17 +1,34 @@
 import React, { Component } from 'react';
 import Drawing from './Interactive/Drawing';
+import DataStore from '../stores/DataStore';
+import Flock from './Interactive/graphics/Flock';
 
-export default class Top extends Component {
-  render() {
-    const pathname = location.pathname;
-    const showDrawing =
-      pathname === '/' || pathname === '/sobre' || pathname === '/relatos';
-    const drawing = !showDrawing ? (
+export default class Footer extends Component {
+  getDrawingUI(hide) {
+    if (hide) return null;
+
+    return (
       <section className='drawingSection'>
         <Drawing />
       </section>
-    ) : null;
+    );
+  }
 
-    return drawing;
+  getFlock() {
+    if (!DataStore.userAnim) return null;
+
+    return <Flock img={DataStore.userAnim} />;
+  }
+
+  render() {
+    const url = location.pathname;
+    const hideDrawing = url === '/' || url === '/sobre' || url === '/relatos';
+
+    return (
+      <footer>
+        {this.getFlock()}
+        {this.getDrawingUI(hideDrawing)}
+      </footer>
+    );
   }
 }

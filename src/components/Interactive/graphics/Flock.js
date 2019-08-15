@@ -40,8 +40,10 @@ export default class Flock extends React.Component {
 
     this.ctx.globalAlpha = 1;
 
+    const options = DataStore.userAnimD;
+
     for (let i = 0; i < 10; i++) {
-      this.flock.push(new Bird(DataStore.userAnimD, this.ctx, this.props.img));
+      this.flock.push(new Bird(options, this.ctx, this.props.img));
     }
 
     this.play();
@@ -53,7 +55,7 @@ export default class Flock extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='flockWrapper'>
         <canvas
           id='flock'
           ref='stage'
