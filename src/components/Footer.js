@@ -9,7 +9,7 @@ export default class Footer extends Component {
 
     return (
       <section className='drawingSection'>
-        <Drawing />
+        <Drawing currentPage={location.pathname} />
       </section>
     );
   }

@@ -186,7 +186,8 @@ export default class Drawing extends Component {
       anim.onload = () => {
         DataStore.userAnim = anim;
         DataStore.userAnimD = d;
-        // history.push('/');
+        history.push('/sobre');
+        history.replace(this.props.currentPage);
       };
       anim.src = url;
     });
@@ -223,7 +224,7 @@ export default class Drawing extends Component {
     let painter = this.getPainter();
     let playPause = !this.state.play ? 'play' : 'pause';
     let ready = this.getReadyBtn();
-    console.log(history);
+    console.log();
 
     return (
       <div
