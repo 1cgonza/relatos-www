@@ -18,7 +18,10 @@ export default class Header extends Component {
   };
 
   onScroll = e => {
-    if (e.pageY >= document.body.clientHeight - window.innerHeight - 400) {
+    if (
+      window.pageYOffset >=
+      document.body.clientHeight - window.innerHeight - 400
+    ) {
       this.setState({
         showScroll: false
       });
