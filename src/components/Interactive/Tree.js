@@ -68,10 +68,10 @@ export default class Tree extends Component {
     ctx.restore();
   }
 
-  assetLoaded() {
+  assetLoaded = () => {
     this.loadedAssets++;
     this.renderCanvas();
-  }
+  };
 
   renderCanvas() {
     if (this.loadedAssets >= this.state.totalAssets) {
@@ -129,17 +129,21 @@ export default class Tree extends Component {
     this.canvas = this.refs.stage;
     this.ctx = this.canvas.getContext('2d');
 
-    this.tree.onload = this.assetLoaded.bind(this);
-    this.grass.onload = this.assetLoaded.bind(this);
+    this.tree.onload = this.assetLoaded;
+    this.grass.onload = this.assetLoaded;
     this.tree.src = trees.url;
     this.grass.src = '/assets/bg/pasto1.png';
 
     if (totalColors > 0) {
-      for (var imgID in this.props.colorImgs) {
-        let img = new Image();
-        this.colors.push(img);
-        img.onload = this.assetLoaded.bind(this);
-        img.src = this.props.colorImgs[imgID].medium;
+      for (let imgID in this.props.colorImgs) {
+        if (this.props.colorImgs[imgID].medium) {
+          let img = new Image();
+          this.colors.push(img);
+          img.onload = this.assetLoaded;
+          img.src = this.props.colorImgs[imgID].medium;
+        } else {
+          totalColors--;
+        }
       }
     }
 
