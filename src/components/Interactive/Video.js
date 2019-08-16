@@ -22,7 +22,9 @@ export default class Video extends Component {
       playbackTheme: null,
       dims: null,
       buffered: 0,
-      currentTime: 0
+      currentTime: 0,
+      subList: null,
+      currentSubLang: null
     };
 
     this.debouncer = new Debouncer();
@@ -85,7 +87,8 @@ export default class Video extends Component {
   onLoadedMeta = () => {
     this.setState({
       videoReady: true,
-      duration: this.player.duration
+      duration: this.player.duration,
+      currentSubLang: this.player.subtitle
     });
   };
 
@@ -158,6 +161,21 @@ export default class Video extends Component {
     });
   };
 
+  onSubsAvailable = e => {
+    let subs = this.player.subtitles;
+    subs = subs.filter(val => val === 'en' || val === 'es');
+    this.setState({
+      subList: subs
+    });
+  };
+
+  onSubsChange = e => {
+    this.player.setSubtitle(e.target.value);
+    this.setState({
+      currentSubLang: e.target.value
+    });
+  };
+
   getCurrentTime = () => {
     return this.player.currentTime;
   };
@@ -221,6 +239,7 @@ export default class Video extends Component {
     this.player.addEventListener('pause', this.onPause);
     this.player.addEventListener('timeupdate', this.onTimeUpdate);
     this.player.addEventListener('video_end', this.onVideoEnd);
+    this.player.addEventListener('subtitlesavailable', this.onSubsAvailable);
     // this.player.addEventListener('controlschange', this.onContolsChange);
     // this.player.addEventListener('start', this.onVideoStart);
     // this.player.addEventListener('progress', this.onProgress);
@@ -278,6 +297,9 @@ export default class Video extends Component {
           seekTo={this.seekTo}
           buffered={this.state.buffered}
           currentTime={this.state.currentTime}
+          subList={this.state.subList}
+          currentSubLang={this.state.currentSubLang}
+          onSubsChange={this.onSubsChange}
         />
         <Player
           slug={this.state.currentProject}

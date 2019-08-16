@@ -115,3 +115,24 @@ $playColor: darken($green, 50%);
     }
   }
 }
+
+$border_color: #107177;
+
+select {
+  appearance: none;
+  text-indent: 0.01px;
+  text-overflow: '';
+  padding: .5em 2em .5em .5em;
+  position: relative;
+  display: inline-block;
+  border-radius: 0;
+  border: none;
+  position: relative;
+  background-color: rgba(#000, 0.5);
+  color: #fff;
+  font-weight: bold;
+
+  &:focus {
+    outline: none;
+  }
+}
