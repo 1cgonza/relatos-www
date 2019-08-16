@@ -9,14 +9,12 @@ export default class VideoPlayer extends Component {
     const coords = e.target.getBoundingClientRect();
     const pos = e.clientX - coords.left;
     const s = (this.props.duration / coords.width) * pos;
-    console.log(s, this.props.duration);
     this.props.seekTo(s);
   };
 
   render() {
     if (!this.props.dims) return null;
     const step = this.props.dims.w / this.props.duration;
-    // console.log(this.props.dims.w, this.props.duration);
 
     return (
       <div
