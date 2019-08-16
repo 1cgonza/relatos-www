@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import DataStore from '../../stores/DataStore';
-import { fitElement, random, Debouncer } from '../../utils/helpers';
+import { fitElement, random, Debouncer, shuffle } from '../../utils/helpers';
 import Player from './ui/Player';
 import PlayPause from './ui/PlayPause';
 import VideoPlayer from './ui/VideoPlayer';
@@ -89,19 +89,12 @@ export default class Video extends Component {
     });
   };
 
-  shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
-      [array[i], array[j]] = [array[j], array[i]]; // swap elements
-    }
-  }
-
   loadNewVideoInPosition() {
     const rel = themesData.find(t => t.name === this.state.playbackTheme)
       .projects;
     const next = DataStore.getProjectBySlug(rel[random(0, rel.length)]);
     let copy = [...next.themesSrt.d];
-    this.shuffle(copy);
+    shuffle(copy);
 
     const position = copy.find(p => {
       return p.terms.find(term => term === this.state.playbackTheme);
@@ -146,6 +139,22 @@ export default class Video extends Component {
     this.setState({
       currentTime: this.player.currentTime,
       buffered: this.player.bufferedTime
+    });
+  };
+
+  onVideoEnd = () => {
+    const next = DataStore.getProjectBySlug(
+      DataStore.getPrevNextProjects(this.state.currentProject).next
+    );
+
+    this.setState({
+      currentProject: next.slug,
+      currentProjectThemes: next.themesSrt.options,
+      currentProjectThemeD: next.themesSrt.d
+    });
+
+    this.player.load(next.oembed, {
+      autoplay: true
     });
   };
 
@@ -211,6 +220,7 @@ export default class Video extends Component {
     this.player.addEventListener('play', this.onPlay);
     this.player.addEventListener('pause', this.onPause);
     this.player.addEventListener('timeupdate', this.onTimeUpdate);
+    this.player.addEventListener('video_end', this.onVideoEnd);
     // this.player.addEventListener('controlschange', this.onContolsChange);
     // this.player.addEventListener('start', this.onVideoStart);
     // this.player.addEventListener('progress', this.onProgress);
@@ -249,6 +259,7 @@ export default class Video extends Component {
     this.player.removeEventListener('play', this.onPlay);
     this.player.removeEventListener('pause', this.onPause);
     this.player.removeEventListener('timeupdate', this.onTimeUpdate);
+    this.player.removeEventListener('video_end', this.onVideoEnd);
 
     window.removeEventListener('resize', this.onResize);
   }
