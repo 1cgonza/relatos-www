@@ -5,7 +5,8 @@ export default class VideoPlayer extends Component {
     super(props);
 
     this.state = {
-      tipTime: ''
+      tipTime: '',
+      prevVol: 0
     };
 
     this.subsD = {
@@ -20,6 +21,14 @@ export default class VideoPlayer extends Component {
     let s = (this.props.duration / coords.width) * pos;
     s = s >= 0 ? s : 0;
     this.props.seekTo(s);
+  };
+
+  onVolIconClick = e => {
+    if (e.target.classList.contains('mute')) {
+      this.props.onVolumeChange(this.state.prevVol);
+    } else {
+      this.props.onVolumeChange(0);
+    }
   };
 
   getSubs() {
@@ -62,12 +71,19 @@ export default class VideoPlayer extends Component {
     });
   };
 
+  onVolumeChange = e => {
+    this.props.onVolumeChange(e.target.value);
+    this.setState({
+      prevVol: e.target.value
+    });
+  };
+
   onMouseLeave = e => {
     this.refs.tip.classList.remove('active');
   };
 
   render() {
-    if (!this.props.dims) return null;
+    if (!this.props.dims || !this.props.duration) return null;
     const step = this.props.dims.w / this.props.duration;
 
     return (
@@ -97,7 +113,25 @@ export default class VideoPlayer extends Component {
             }}
           />
         </div>
-        <div className='videoPlayerOptions'>{this.getSubs()}</div>
+        <div className='videoPlayerOptions'>
+          <div className='volumeOption'>
+            <span
+              ref='volIcon'
+              className={`volIcon${this.props.volume == 0 ? ' mute' : ''}`}
+              onClick={this.onVolIconClick}
+            />
+            <input
+              className='volume'
+              type='range'
+              min='0'
+              max='1'
+              step='.05'
+              value={this.props.volume}
+              onChange={this.onVolumeChange}
+            />
+          </div>
+          {this.getSubs()}
+        </div>
       </div>
     );
   }

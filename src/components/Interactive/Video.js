@@ -24,7 +24,8 @@ export default class Video extends Component {
       buffered: 0,
       currentTime: 0,
       subList: null,
-      currentSubLang: null
+      currentSubLang: null,
+      volume: null
     };
 
     this.debouncer = new Debouncer();
@@ -62,7 +63,8 @@ export default class Video extends Component {
   onPlaybackReady = e => {
     // add play button
     this.setState({
-      playbackReady: true
+      playbackReady: true,
+      volume: this.player.volume
     });
   };
 
@@ -89,6 +91,13 @@ export default class Video extends Component {
       videoReady: true,
       duration: this.player.duration,
       currentSubLang: this.player.subtitle
+    });
+  };
+
+  onVolumeChange = val => {
+    this.player.setVolume(val);
+    this.setState({
+      volume: val
     });
   };
 
@@ -300,6 +309,8 @@ export default class Video extends Component {
           subList={this.state.subList}
           currentSubLang={this.state.currentSubLang}
           onSubsChange={this.onSubsChange}
+          volume={this.state.volume}
+          onVolumeChange={this.onVolumeChange}
         />
         <Player
           slug={this.state.currentProject}
