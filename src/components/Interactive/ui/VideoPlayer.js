@@ -63,7 +63,7 @@ export default class VideoPlayer extends Component {
     let s = (this.props.duration / coords.width) * pos;
     s = s >= 0 ? s : 0;
 
-    this.refs.tip.style.left = `${e.clientX}px`;
+    this.refs.tip.style.left = `${pos}px`;
     this.refs.tip.classList.add('active');
 
     this.setState({

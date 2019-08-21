@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import DataStore from '../../../stores/DataStore';
-import { sizeFromPercentage } from '../../../utils/helpers';
 import { themesData, techniquesData } from '../../../utils/categories';
 
 export default class Player extends Component {
@@ -12,8 +11,6 @@ export default class Player extends Component {
       tehcsOptions: null,
       projectW: 0
     };
-
-    this.loop;
   }
 
   onResize = e => {
@@ -21,23 +18,6 @@ export default class Player extends Component {
       projectW:
         this.refs.timeline.clientWidth / DataStore.getAllProjects().length
     });
-  };
-
-  handleMouseEnter = e => {
-    let coords = e.target.getBoundingClientRect();
-    this.refs.tip.style.left = `${coords.x}px`;
-    this.refs.tip.style.top = `${coords.y + 20}px`;
-    this.refs.tip.innerText = e.target.dataset.name;
-    this.refs.tip.classList.add('active');
-  };
-
-  handleMouseLeave = () => {
-    this.refs.tip.innerText = '';
-    this.refs.tip.classList.remove('active');
-  };
-
-  handleClick = e => {
-    this.player.seekTo(e.target.dataset.start);
   };
 
   getPoints() {
@@ -130,14 +110,11 @@ export default class Player extends Component {
       <div className='player'>
         <div ref='timeline' className='timeline'>
           {points}
-          <div ref='progress' className='progress' />
-          <div ref='header' className='header' />
         </div>
 
         <div className='options' ref='options'>
           {this.getOptions()}
         </div>
-        <div ref='tip' className='tip' />
       </div>
     );
   }

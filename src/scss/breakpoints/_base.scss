@@ -1137,6 +1137,7 @@ $mf_y2: 0%;
 
   .tip {
     display: none;
+    transform: translateX(-50%);
 
     &.active {
       display: block;
@@ -1146,7 +1147,6 @@ $mf_y2: 0%;
       font-size: 0.75em;
       border: 1px solid black;
       background-color: white;
-      transform: translateX(-100%);
       text-align: center;
       top: -2em;
       pointer-events: none;
